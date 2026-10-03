@@ -38,6 +38,15 @@ Not accepted:
 
 Use the dataset table format: name and official link, modality, access model (open / free registration / credentialed), and a one-sentence description. If there is a companion code repository, mention it in the description.
 
+## Glossary
+
+If your entry introduces a term or acronym that isn't in the [glossary](README.md#appendix-glossary) yet, add it to the matching topic table with **both** definitions:
+
+- **Technical:** precise, for practitioners. Include units, frequency ranges, or algorithms where relevant.
+- **Plain language:** one or two sentences a non-specialist can follow, with no undefined jargon.
+
+Project, dataset, and organization names go in the [acronym quick reference](README.md#acronym-quick-reference). Keep each table alphabetized.
+
 ## Updating entries
 
 Corrections are always welcome, especially license changes, moved repositories, and projects that have been archived. Please update the **Last verified** date in the README when you re-check entries.
