@@ -5,3 +5,7 @@
 # Figshare DOIs return HTTP 202 (bot challenge) to automated clients. Records are verified
 # via the Figshare API instead (HEFMI-ICH, 10.6084/m9.figshare.28955456, checked 2026-10-03).
 ^https://doi\.org/10\.6084/m9\.figshare\.
+
+# sleepdata.org (NSRR) serves an incomplete TLS chain (leaf only, missing the Sectigo DV R36
+# intermediate), so OpenSSL-based checkers reject it; browsers fetch the intermediate. Verified 2026-10-03.
+^https://sleepdata\.org/
