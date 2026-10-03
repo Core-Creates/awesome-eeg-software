@@ -1,0 +1,3 @@
+# Brainstorm docs site consistently times out from GitHub Actions runners but loads
+# normally in browsers (verified 2026-10-03). The Brainstorm GitHub repo link is still checked.
+^https://neuroimage\.usc\.edu/
