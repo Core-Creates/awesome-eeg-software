@@ -25,7 +25,7 @@ jobs:
             --max-retries 3
             --timeout 30
             --accept 200,206,429
-            README.md CONTRIBUTING.md
+            README.md CONTRIBUTING.md inactive-and-limited.md
           fail: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -29,7 +29,7 @@ Not accepted:
    ```
 
 3. Use the license from the project's **actual license file**, given as an [SPDX identifier](https://spdx.org/licenses/). If the repository has no license file, write `*No license file*`.
-4. Add an italic note for any specific shortfall: no tests or CI, no commits in 12+ months, overlap with another entry, or mostly non-code content.
+4. Add an italic note for any specific shortfall in a maintained project, such as no tests or CI, overlap with another entry, or mostly non-code content. Projects that are **archived, have no commits in 12+ months, or have no license file** go in [inactive-and-limited.md](inactive-and-limited.md) instead of the README, together with the reason.
 5. Link to the canonical source repository. That is GitHub, GitLab, or the project's own forge, not a personal fork.
 6. Keep descriptions neutral and factual. Don't use marketing language.
 7. In your PR, include the evidence: source size by language, tests and CI present, commits in the last 12 months, and latest release.
@@ -51,6 +51,13 @@ Project, dataset, and organization names go in the [acronym quick reference](REA
 
 Corrections are always welcome, especially license changes, moved repositories, and projects that have been archived. Please update the **Last verified** date in the README when you re-check entries.
 
-## Link checking
+## Formatting and checks
 
-A GitHub Actions workflow runs [lychee](https://github.com/lycheeverse/lychee) on every pull request and weekly. If a URL is known to block automated checkers, add it to `.lycheeignore` with a comment explaining why.
+The README must pass [awesome-lint](https://github.com/sindresorhus/awesome-lint). CI runs it on every pull request. To keep it passing:
+
+- **Align table pipes** so every column lines up, with one space of padding inside each cell.
+- **Use in-page links (`#section`) only in the Contents.** Elsewhere, write section names as plain text.
+- **Don't link the same URL twice** anywhere in the README.
+- **Don't hard-wrap lines.** Write each paragraph or table row on one line.
+
+A second workflow runs [lychee](https://github.com/lycheeverse/lychee) on every pull request and weekly to catch broken links. If a URL is known to block automated checkers, add it to `.lycheeignore` with a comment explaining why.
