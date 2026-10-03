@@ -1,6 +1,6 @@
 # Awesome EEG Software [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
-> A curated, verified list of open-source software for reading, preprocessing, analyzing, decoding, and acquiring EEG — from MATLAB classics like EEGLAB, FieldTrip, and Brainstorm to the MNE-Python ecosystem, BCI/deep-learning libraries, open hardware, and sleep/clinical tooling.
+> A curated, verified list of open-source software for reading, preprocessing, analyzing, decoding, and acquiring EEG — from MATLAB classics like EEGLAB, FieldTrip, and Brainstorm to the MNE-Python ecosystem, BCI/deep-learning libraries, open hardware, and sleep/clinical tooling — plus verified public datasets for EEG, ECoG/sEEG, MEG, fNIRS, and human single-neuron electrophysiology.
 
 **Inclusion bar:** every entry must contain **meaningful code** and be either **novel** (a capability no other entry provides) or **exceptionally well engineered** (tests, CI, docs, packaging, active maintenance). Each repository was checked against the GitHub/GitLab APIs for source size, tests, CI, commits in the last 12 months, and license file. Entries that fall short in a specific way carry an italic note instead of being silently included. [Datasets](#datasets-data-not-code) are listed separately and labeled as data, not code.
 
@@ -206,20 +206,99 @@ Software and specifications for organizing, validating, and hosting data.
 
 ## Datasets (data, not code)
 
-These entries are **data**, not software. They are exempt from the code bar above, but are still checked for a working, official source.
+These entries are **data**, not software. They are exempt from the code bar above, but each one was checked against its official source on the verification date: OpenNeuro, DANDI, and Figshare names and licenses via their APIs, and PhysioNet titles and access levels from their pages.
 
-| Dataset | Modality | Access | Description |
+**Access key:** **Open** means download without an account. **Registration** means a free account or request form. **Credentialed** means a data-use agreement and/or training is required.
+
+- [Scalp EEG](#scalp-eeg)
+- [Sleep and polysomnography](#sleep-and-polysomnography)
+- [Intracranial EEG: ECoG and sEEG](#intracranial-eeg-ecog-and-seeg)
+- [MEG and simultaneous MEG/EEG](#meg-and-simultaneous-megeeg)
+- [fNIRS and hybrid EEG-fNIRS](#fnirs-and-hybrid-eeg-fnirs)
+- [HEG (hemoencephalography)](#heg-hemoencephalography)
+- [Human single-neuron and microelectrode electrophysiology](#human-single-neuron-and-microelectrode-electrophysiology)
+
+### Scalp EEG
+
+| Dataset | Focus | Access | Description |
 |---|---|---|---|
-| [Harvard EEG Database (HEEDB)](https://bdsp.io) | Clinical scalp EEG + reports | Credentialed (BDSP) | Large multi-hospital clinical EEG archive with linked reports. Helper repo: [Harvard-EEG-Database-Tools](https://github.com/bdsp-core/Harvard-EEG-Database-Tools) (MIT), with EDF reading via MNE, report-timestamp alignment, LLM-based label extraction from reports, and dataset statistics. *The repo is mostly bundled metadata and notebooks, with about 23 KB of scripts.* |
-| [TUH EEG Corpus](https://isip.piconepress.com/projects/nedc/html/tuh_eeg/) | Clinical scalp EEG | Free registration | Temple University Hospital clinical EEG corpus, including seizure (TUSZ) and artifact subsets. |
-| [CHB-MIT Scalp EEG](https://physionet.org/content/chbmit/) | Scalp EEG | Open (PhysioNet) | Pediatric seizure recordings. |
-| [Sleep-EDF Expanded](https://physionet.org/content/sleep-edfx/) | PSG (EEG, EOG, EMG) | Open (PhysioNet) | Whole-night polysomnography with expert sleep stages; a standard sleep-staging benchmark. |
-| [EEG Motor Movement/Imagery](https://physionet.org/content/eegmmidb/) | Scalp EEG | Open (PhysioNet) | Classic 109-subject motor imagery BCI dataset. |
-| [Epilepsy iEEG Multicenter (ds003029)](https://openneuro.org/datasets/ds003029) | iEEG / ECoG | Open (OpenNeuro, BIDS) | Intracranial recordings from epilepsy patients across multiple centers, in BIDS format. |
+| [Harvard EEG Database (HEEDB)](https://bdsp.io) | Clinical | Credentialed (BDSP) | Large multi-hospital clinical EEG archive with linked reports. Helper repo: [Harvard-EEG-Database-Tools](https://github.com/bdsp-core/Harvard-EEG-Database-Tools) (MIT), with EDF reading via MNE, report-timestamp alignment, LLM-based label extraction from reports, and dataset statistics. *The repo is mostly bundled metadata and notebooks, with about 23 KB of scripts.* |
+| [TUH EEG Corpus](https://isip.piconepress.com/projects/nedc/html/tuh_eeg/) | Clinical | Registration | Temple University Hospital clinical EEG corpus, including seizure (TUSZ) and artifact subsets. |
+| [CHB-MIT Scalp EEG](https://physionet.org/content/chbmit/) | Epilepsy | Open (PhysioNet) | Pediatric seizure recordings. |
+| [Siena Scalp EEG](https://physionet.org/content/siena-scalp-eeg/) | Epilepsy | Open (PhysioNet) | Adult epilepsy recordings with annotated seizures. |
+| [Healthy Brain Network EEG (ds005505)](https://openneuro.org/datasets/ds005505) | Development | Open (OpenNeuro, CC-BY-SA 4.0) | Release 1 of the pediatric HBN EEG data in BIDS (resting state and tasks); further releases are separate OpenNeuro accessions. |
+| [MPI-Leipzig LEMON](https://fcon_1000.projects.nitrc.org/indi/retro/MPI_LEMON.html) | Resting state | Open | Mind-Brain-Body dataset: resting-state EEG with MRI and extensive phenotyping of young and older adults. |
+| [ERP CORE](https://erpinfo.org/erp-core) | ERPs | Open (OSF) | Reference recordings and pipelines for seven widely studied ERP components from six paradigms. |
+| [Face processing EEG (ds002718)](https://openneuro.org/datasets/ds002718) | ERPs | Open (OpenNeuro, CC0) | EEG portion of the Wakeman & Henson face study, prepared for EEGLAB tutorials. |
+| [Alzheimer's, FTD, and healthy EEG (ds004504)](https://openneuro.org/datasets/ds004504) | Clinical | Open (OpenNeuro, CC0) | Resting-state EEG from Alzheimer's disease, frontotemporal dementia, and healthy control groups. |
+| [UC San Diego Parkinson's resting EEG (ds002778)](https://openneuro.org/datasets/ds002778) | Clinical | Open (OpenNeuro, CC0) | Resting-state EEG from patients with Parkinson's disease and controls. |
+| [EEG During Mental Arithmetic](https://physionet.org/content/eegmat/) | Cognitive load | Open (PhysioNet) | EEG at rest and during serial-subtraction mental arithmetic. |
+| [EEG Motor Movement/Imagery](https://physionet.org/content/eegmmidb/) | BCI | Open (PhysioNet) | Classic 109-subject motor execution/imagery dataset. |
+| [BCI Competition IV](https://www.bbci.de/competition/iv/) | BCI | Open | Benchmark motor-imagery and related BCI datasets (including the widely used 2a/2b sets). |
+
+### Sleep and polysomnography
+
+| Dataset | Focus | Access | Description |
+|---|---|---|---|
+| [Sleep-EDF Expanded](https://physionet.org/content/sleep-edfx/) | Staging | Open (PhysioNet) | Whole-night polysomnography with expert sleep stages; a standard sleep-staging benchmark. |
+| [Haaglanden Medisch Centrum sleep staging](https://physionet.org/content/hmc-sleep-staging/) | Staging | Open (PhysioNet) | Clinical PSG recordings with sleep-stage annotations from a Dutch sleep center. |
+| [Sleep Heart Health Study (SHHS)](https://sleepdata.org/datasets/shhs) | Cohort | Credentialed (NSRR) | Large multi-center PSG cohort distributed by the National Sleep Research Resource. |
+
+### Intracranial EEG: ECoG and sEEG
+
+| Dataset | Type | Access | Description |
+|---|---|---|---|
+| [Epilepsy iEEG Multicenter (ds003029)](https://openneuro.org/datasets/ds003029) | ECoG + sEEG | Open (OpenNeuro, CC0) | Seizure recordings from epilepsy patients across multiple centers, in BIDS. |
+| [Epilepsy iEEG Interictal Multicenter (ds003876)](https://openneuro.org/datasets/ds003876) | ECoG + sEEG | Open (OpenNeuro, CC0) | Interictal companion to ds003029. |
+| [HUP iEEG Epilepsy (ds004100)](https://openneuro.org/datasets/ds004100) | ECoG + sEEG | Open (OpenNeuro, CC0) | Hospital of the University of Pennsylvania epilepsy iEEG recordings in BIDS. |
+| [Interictal iEEG with HFO markings (ds003498)](https://openneuro.org/datasets/ds003498) | iEEG | Open (OpenNeuro, CC0) | Slow-wave-sleep iEEG with marked high-frequency oscillations; a standard HFO benchmark. |
+| [RESPect intraoperative iEEG (ds003844)](https://openneuro.org/datasets/ds003844) | ECoG | Open (OpenNeuro, CC0) | Clinical intraoperative ECoG from epilepsy surgery, converted to BIDS. |
+| [CCEP ECoG across ages 4–51 (ds004080)](https://openneuro.org/datasets/ds004080) | ECoG | Open (OpenNeuro, CC0) | Cortico-cortical evoked potentials (single-pulse stimulation) across development. |
+| [sEEG forced two-choice task (ds004473)](https://openneuro.org/datasets/ds004473) | sEEG | Open (OpenNeuro, CC0) | Stereo-EEG recorded during a two-alternative forced-choice task, with MRI. |
+| [iEEG-fMRI naturalistic film (ds003688)](https://openneuro.org/datasets/ds003688) | ECoG + sEEG + fMRI | Open (OpenNeuro, CC0) | Intracranial and fMRI responses to the same short audiovisual film. |
+| ["Podcast" ECoG (ds005574)](https://openneuro.org/datasets/ds005574) | ECoG | Open (OpenNeuro, CC0) | ECoG recorded while participants listened to a naturalistic podcast story. |
+| [AJILE12 (DANDI 000055)](https://dandiarchive.org/dandiset/000055) | ECoG + video pose | Open (DANDI, NWB) | Long-term naturalistic intracranial recordings with synchronized video-based pose tracking. |
+
+### MEG and simultaneous MEG/EEG
+
+| Dataset | Type | Access | Description |
+|---|---|---|---|
+| [Multisubject, multimodal face processing (ds000117)](https://openneuro.org/datasets/ds000117) | MEG + MRI | Open (OpenNeuro, CC0) | Wakeman & Henson face-perception study; a common tutorial dataset for MNE, SPM, and FieldTrip. |
+| [Face processing MEEG with HED (ds003645)](https://openneuro.org/datasets/ds003645) | MEG + EEG + MRI | Open (OpenNeuro, CC0) | Simultaneous MEG/EEG face study with Hierarchical Event Descriptor (HED) annotations. |
+| [THINGS-MEG (ds004212)](https://openneuro.org/datasets/ds004212) | MEG + MRI | Open (OpenNeuro, CC0) | Dense sampling of responses to thousands of object images in a few participants. |
+| [MOUS](https://data.donders.ru.nl/collections/di/dccn/DSC_3011020.09_236) | MEG + fMRI | Registration (Donders) | Mother of Unification Studies: 204-subject multimodal language-processing dataset. |
+| [Cam-CAN](https://www.cam-can.org/index.php?content=dataset) | MEG + MRI | Registration | Cambridge Centre for Ageing and Neuroscience lifespan cohort with resting and task MEG. |
+| [OMEGA](https://omega.bic.mni.mcgill.ca) | MEG | Registration | The Open MEG Archive (McGill): resting-state MEG with anatomical MRI. |
+| [HCP MEG](https://www.humanconnectome.org/study/hcp-young-adult/project-protocol/resting-state-meg) | MEG | Registration | Human Connectome Project resting and task MEG for a subset of the young-adult cohort. |
+
+### fNIRS and hybrid EEG-fNIRS
+
+| Dataset | Type | Access | Description |
+|---|---|---|---|
+| [TU Berlin hybrid EEG-NIRS BCI](https://doc.ml.tu-berlin.de/hBCI/) | EEG + fNIRS | Open | Shin et al. simultaneous EEG and NIRS for motor imagery and mental arithmetic BCI; see also their [cognitive-task dataset](http://doc.ml.tu-berlin.de/simultaneous_EEG_NIRS/) (n-back, discrimination, word generation). |
+| [HEFMI-ICH](https://doi.org/10.6084/m9.figshare.28955456.v4) | EEG + fNIRS | Open (Figshare, CC BY 4.0) | Hybrid EEG-fNIRS motor-imagery dataset from intracerebral hemorrhage patients and controls. |
+| [Multimodal fNIRS-EEG unilateral limb MI](https://www.nature.com/articles/s41597-026-07807-x) | EEG + fNIRS | Open (see article) | *Scientific Data* (2026) descriptor of a hybrid motor-imagery dataset; data links are in the article. |
+| [fNIRS spatial attention decoding (ds004830)](https://openneuro.org/datasets/ds004830) | fNIRS | Open (OpenNeuro, CC0) | fNIRS recorded during complex audio-visual scene analysis, in BIDS. |
+| [Mental workload: fNIRS + TCD](https://physionet.org/content/mental-fnirs/1.0/) | fNIRS + Doppler | Open (PhysioNet) | Prefrontal fNIRS with transcranial Doppler during an n-back task. |
+
+### HEG (hemoencephalography)
+
+**No public HEG dataset was found** as of 2026-10-03. The search covered Zenodo, OSF, Figshare, Mendeley Data, PhysioNet, OpenNeuro, Kaggle, Harvard Dataverse, IEEE DataPort, and the data-availability statements of HEG papers. Both nIR-HEG and pIR-HEG data appear to stay inside vendor systems or clinical studies. nIR-HEG measures prefrontal oxygenation with near-infrared light, so the closest open data are the prefrontal [fNIRS datasets](#fnirs-and-hybrid-eeg-fnirs) above. If you know of an open HEG dataset, please [contribute it](CONTRIBUTING.md).
+
+### Human single-neuron and microelectrode electrophysiology
+
+| Dataset | Type | Access | Description |
+|---|---|---|---|
+| [Human MTL neurons, declarative memory (DANDI 000004)](https://dandiarchive.org/dandiset/000004) | Single units | Open (DANDI, NWB) | Human medial temporal lobe single-neuron recordings during a declarative-memory task, with an NWB processing pipeline. |
+| [Human neurons, Sternberg working memory (DANDI 000469)](https://dandiarchive.org/dandiset/000469) | Single units | Open (DANDI, NWB) | Single-neuron activity during a Sternberg working-memory task. |
+| [MTL neurons + scalp and intracranial EEG (DANDI 000574)](https://dandiarchive.org/dandiset/000574) | Single units + iEEG + EEG | Open (DANDI, NWB) | Medial temporal lobe neurons recorded simultaneously with scalp and intracranial EEG during verbal working memory. |
+| [Amygdala neurons + iEEG, aversive stimuli (DANDI 000576)](https://dandiarchive.org/dandiset/000576) | Single units + iEEG | Open (DANDI, NWB) | Amygdala neurons and intracranial EEG during aversive dynamic visual stimulation. |
+| [Single neurons, iEEG, and fMRI during movies (DANDI 000623)](https://dandiarchive.org/dandiset/000623) | Single units + iEEG + fMRI | Open (DANDI, NWB) | Multimodal responses to movie watching in neurosurgical patients. |
+| [Hippocampal PAC and working memory (DANDI 000673)](https://dandiarchive.org/dandiset/000673) | Single units + LFP | Open (DANDI, NWB) | Data for a study on phase-amplitude coupling of human hippocampal neurons in working-memory control. |
 
 > **Privacy:** clinical EEG reports contain PHI. Run any LLM-based label extraction locally under your IRB/data-use agreement. Never send reports to hosted endpoints.
 
-More public EEG datasets: [MOABB's dataset list](https://github.com/NeuroTechX/moabb) (BCI) and [OpenNeuro](https://openneuro.org) (search for EEG or iEEG).
+More public datasets: [MOABB](https://github.com/NeuroTechX/moabb) (BCI loaders), [OpenNeuro](https://openneuro.org) (search EEG, iEEG, MEG, or NIRS), [DANDI](https://dandiarchive.org) (NWB electrophysiology), and [PhysioNet](https://physionet.org).
 
 ## Licensing notes
 

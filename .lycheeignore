@@ -1,3 +1,7 @@
 # Brainstorm docs site consistently times out from GitHub Actions runners but loads
 # normally in browsers (verified 2026-10-03). The Brainstorm GitHub repo link is still checked.
 ^https://neuroimage\.usc\.edu/
+
+# Figshare DOIs return HTTP 202 (bot challenge) to automated clients. Records are verified
+# via the Figshare API instead (HEFMI-ICH, 10.6084/m9.figshare.28955456, checked 2026-10-03).
+^https://doi\.org/10\.6084/m9\.figshare\.

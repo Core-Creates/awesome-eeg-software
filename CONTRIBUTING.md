@@ -17,7 +17,7 @@ Not accepted:
 - Paper-code dumps whose method is already implemented in a listed library. For example, EEG foundation models that Braindecode ships.
 - Abandoned repositories when a maintained alternative is already listed.
 
-**Datasets** (EEG, iEEG/ECoG, PSG) are welcome. They go in the [Datasets (data, not code)](README.md#datasets-data-not-code) section and must link to an official source. They are exempt from the code bar.
+**Datasets** (scalp EEG, ECoG/sEEG, MEG, fNIRS, HEG, PSG, and human single-neuron or microelectrode recordings) are welcome. They go in the [Datasets (data, not code)](README.md#datasets-data-not-code) section and must link to an official source. They are exempt from the code bar.
 
 ## Adding a software entry
 
