@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Awesome EEG Software — Search</title>
+  <meta name="description" content="Search and filter a verified list of open-source EEG software, public EEG/ECoG/MEG/fNIRS datasets, and a glossary with technical and plain-language definitions.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f766e'/%3E%3Cpath d='M4 17h4l2.5-7 3.5 14 3.5-11 2.5 6 1.5-2H28' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // Apply a saved theme before first paint to avoid a flash.
+    try {
+      const t = localStorage.getItem("theme");
+      if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+    } catch (_) {}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#results">Skip to results</a>
+
+  <header class="site-header">
+    <div class="container header-row">
+      <a class="brand" href="./" aria-label="Awesome EEG Software, search home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M2 17h5l3-9 4 18 4-14 3 8 2-3h7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Awesome EEG Software</span>
+      </a>
+      <nav class="header-actions" aria-label="Site">
+        <a class="icon-link" href="https://github.com/Core-Creates/awesome-eeg-software#readme" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          <span>README</span>
+        </a>
+        <button id="theme-toggle" class="icon-button" type="button" aria-label="Theme: system. Switch to light">
+          <svg class="i-system" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          <svg class="i-light" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          <svg class="i-dark" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container">
+        <h1 id="hero-title">Find EEG software, datasets, and terms</h1>
+        <p class="lede">A verified, curated list of open-source tools for EEG, MEG, ECoG/sEEG, and fNIRS, with public datasets and a glossary written for both specialists and newcomers.</p>
+
+        <form class="search" role="search" onsubmit="return false">
+          <label class="visually-hidden" for="q">Search the list</label>
+          <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="q" type="search" autocomplete="off" spellcheck="false"
+                 placeholder="Search tools, datasets, or terms — e.g. ICA, sleep staging, ECoG"
+                 aria-describedby="search-hint">
+          <kbd class="kbd" aria-hidden="true">/</kbd>
+        </form>
+        <p id="search-hint" class="hint">Press <kbd>/</kbd> to search. All words must match. Results update as you type.</p>
+
+        <div class="suggestions" aria-label="Suggested searches">
+          <span class="suggestions-label">Try:</span>
+          <div id="suggestions" class="chip-row"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <div class="tabs" role="tablist" aria-label="Result type" id="tabs"></div>
+
+      <aside class="filters" id="filters" aria-label="Filters"></aside>
+
+      <section class="results-area" aria-labelledby="results-heading">
+        <div class="results-bar">
+          <h2 id="results-heading" class="visually-hidden">Results</h2>
+          <p id="count" class="count" aria-live="polite" aria-atomic="true">Loading the list…</p>
+          <button id="clear-all" class="text-button" type="button" hidden>Clear search and filters</button>
+        </div>
+        <div id="results" class="results" tabindex="-1">
+          <div class="card skeleton" aria-hidden="true"></div>
+          <div class="card skeleton" aria-hidden="true"></div>
+          <div class="card skeleton" aria-hidden="true"></div>
+          <div class="card skeleton" aria-hidden="true"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <p>Content comes live from the <a href="https://github.com/Core-Creates/awesome-eeg-software#readme" rel="noopener">README</a>, which is the single source of truth. <span id="verified"></span></p>
+      <p><a href="https://github.com/Core-Creates/awesome-eeg-software/blob/main/CONTRIBUTING.md" rel="noopener">Contribute</a> · <a href="https://github.com/Core-Creates/awesome-eeg-software/blob/main/inactive-and-limited.md" rel="noopener">Inactive and limited projects</a> · List dedicated to the public domain (CC0). Each project and dataset keeps its own license.</p>
+    </div>
+  </footer>
+
+  <template id="icon-external"><svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></template>
+  <script src="app.js" defer></script>
+</body>
+</html>
