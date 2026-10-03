@@ -8,6 +8,8 @@ Licenses matter here: several major MATLAB toolboxes are **GPL**, so read the li
 
 **New to EEG?** Every term and acronym used here is defined in both technical and plain language in the glossary.
 
+**Search and filter this list:** [core-creates.github.io/awesome-eeg-software](https://core-creates.github.io/awesome-eeg-software/), a searchable view built live from this README.
+
 **Last verified:** 2026-10-03
 
 ## Contents

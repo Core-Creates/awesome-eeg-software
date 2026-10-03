@@ -1,5 +1,5 @@
 // Awesome EEG Software — client-side search over the live README.
-// The README is the single source of truth; this page only parses and filters it.
+// The README is the single source of truth; this page only parses, filters, and decorates it.
 "use strict";
 
 const REPO = "Core-Creates/awesome-eeg-software";
@@ -15,23 +15,32 @@ const SOURCES = {
 };
 
 const SKIP_SECTIONS = new Set(["Contents", "Choosing a stack", "Licensing notes", "Contributing", "Footnotes"]);
+const ICONS = {
+  all: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12h3l2-6 4 13 3-9 2 4h6"/></svg>',
+  software: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>',
+  dataset: '<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>',
+  platform: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5"/></svg>',
+  glossary: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14zM20 17v4H6.5A2.5 2.5 0 0 1 4 19.5"/><path d="M9 7h7M9 11h5"/></svg>',
+};
 const TYPES = [
   { id: "all", label: "All" },
   { id: "software", label: "Software" },
   { id: "dataset", label: "Datasets" },
-  { id: "platform", label: "Standards & platforms" },
+  { id: "platform", label: "Standards" },
   { id: "glossary", label: "Glossary" },
 ];
 const SUGGESTIONS = ["ICA", "sleep staging", "ECoG", "source localization", "real-time", "deep learning", "BIDS", "OpenBCI", "MEG", "fNIRS"];
 const LANGS = ["Python", "MATLAB", "C/C++", "Julia", "R", "Java/Processing", "TypeScript"];
 const LICENSE_FAMILIES = ["Permissive", "Copyleft", "No license"];
 const ACCESS = ["Open", "Registration", "Credentialed"];
+const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const state = {
   q: "", type: "all", section: "", lang: new Set(), lic: new Set(), access: new Set(),
   group: "", mode: "both", inactive: false,
 };
 let ITEMS = [];
+let lastVerified = "";
 
 // ---------- Markdown helpers ----------
 const escapeHtml = (s) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -110,7 +119,7 @@ function parse(md, origin) {
     let m;
     if ((m = line.match(/^## (.+)/))) { h2 = m[1].trim(); h3 = ""; header = null; continue; }
     if ((m = line.match(/^### (.+)/))) { h3 = m[1].trim(); header = null; continue; }
-    if ((m = line.match(/\*\*Last verified:\*\*\s*(\S+)/))) { document.getElementById("verified").textContent = `Last verified ${m[1]}.`; continue; }
+    if ((m = line.match(/\*\*Last verified:\*\*\s*(\S+)/))) { lastVerified = m[1]; continue; }
     if (!line.startsWith("|")) { header = null; continue; }
     const cells = splitRow(line);
     if (!header) { header = cells; continue; }
@@ -213,7 +222,7 @@ function results() {
   const list = base
     .filter((r) => state.type === "all" || r.it.type === state.type)
     .filter((r) => passesFacets(r.it))
-    .sort((a, b) => (toks.length ? b.s - a.s : 0) || a.it.order - b.it.order || 0);
+    .sort((a, b) => (toks.length ? b.s - a.s : 0) || a.it.order - b.it.order);
   return { list: list.map((r) => r.it), counts, toks };
 }
 
@@ -234,13 +243,15 @@ function titleHtml(it) {
   return it.url ? `<a href="${escapeHtml(it.url)}" rel="noopener" class="hl">${name}</a>${extIcon()}` : `<span class="hl">${name}</span>`;
 }
 
+const typeIcon = (type) => `<span class="type-icon" aria-hidden="true">${ICONS[type]}</span>`;
+
 function card(it) {
   if (it.type === "glossary") {
     const tech = `<div><span class="def-label">${it.acronym ? "Stands for" : "Technical"}</span><p class="hl">${inlineMd(it.technical || "")}</p></div>`;
     const pl = `<div><span class="def-label">${it.acronym ? "What it is" : "Plain language"}</span><p class="hl">${inlineMd(it.plainDef || "")}</p></div>`;
     const defs = state.mode === "technical" ? tech : state.mode === "plain" ? pl : tech + pl;
-    return `<article class="card term"><h3><span class="hl">${escapeHtml(it.name)}</span></h3>
-      <div class="meta"><span class="badge kind">${it.acronym ? "Acronym" : "Term"}</span><span class="badge section">${escapeHtml(it.group)}</span></div>
+    return `<article class="card term t-glossary"><div class="card-top">${typeIcon("glossary")}<h3><span class="hl">${escapeHtml(it.name)}</span></h3></div>
+      <div class="meta"><span class="badge">${it.acronym ? "Acronym" : "Term"}</span><span class="badge section">${escapeHtml(it.group)}</span></div>
       <div class="defs ${state.mode === "both" ? "both" : ""}">${defs}</div></article>`;
   }
   const badges = [];
@@ -250,17 +261,17 @@ function card(it) {
     badges.push(licBadge(it.license, it.licFam));
     if (it.inactive) badges.push(`<span class="badge none">Inactive or limited</span>`);
   } else if (it.type === "dataset") {
-    badges.push(`<span class="badge kind">Dataset</span><span class="badge section">${escapeHtml(it.group)}</span>`);
+    badges.push(`<span class="badge section">${escapeHtml(it.group)}</span>`);
     if (it.kind) badges.push(`<span class="badge">${escapeHtml(it.kind)}</span>`);
     const acc = { Open: "open", Registration: "reg", Credentialed: "cred" }[it.accFam] || "";
     if (it.access) badges.push(`<span class="badge ${acc}" title="Access">Access: ${inlineMd(it.access)}</span>`);
   } else {
-    badges.push(`<span class="badge kind">${escapeHtml(plain(it.kind || "Platform"))}</span>`);
+    badges.push(`<span class="badge">${escapeHtml(plain(it.kind || "Platform"))}</span>`);
     badges.push(licBadge(it.license, it.licFam));
   }
   const note = it.note ? `<p class="note">${noteIcon}<span class="hl">${inlineMd(it.note)}</span></p>` : "";
-  return `<article class="card"><h3>${titleHtml(it)}</h3><div class="meta">${badges.join("")}</div>
-    <p class="desc hl">${inlineMd(it.desc || "")}</p>${note}</article>`;
+  return `<article class="card t-${it.type}"><div class="card-top">${typeIcon(it.type)}<h3>${titleHtml(it)}</h3></div>
+    <div class="meta">${badges.join("")}</div><p class="desc hl">${inlineMd(it.desc || "")}</p>${note}</article>`;
 }
 
 function highlight(root, toks) {
@@ -294,6 +305,7 @@ function chip(label, pressed, onClick, count) {
   const b = document.createElement("button");
   b.type = "button";
   b.className = "chip";
+  b.dataset.key = label; // stable identity for focus restoration (text includes a changing count)
   b.setAttribute("aria-pressed", String(pressed));
   b.innerHTML = `${escapeHtml(label)}${count != null ? ` <span class="n">${count}</span>` : ""}`;
   b.addEventListener("click", onClick);
@@ -301,27 +313,26 @@ function chip(label, pressed, onClick, count) {
 }
 
 function renderTabs(counts) {
-  const tabs = $("#tabs");
-  tabs.replaceChildren(...TYPES.map((t) => {
+  $("#tabs").replaceChildren(...TYPES.map((t) => {
     const b = document.createElement("button");
     b.type = "button";
     b.setAttribute("role", "tab");
-    b.className = "tab";
+    b.className = `tab t-${t.id}`;
     b.id = `tab-${t.id}`;
     b.setAttribute("aria-selected", String(state.type === t.id));
     b.setAttribute("aria-controls", "results");
     b.tabIndex = state.type === t.id ? 0 : -1;
-    b.innerHTML = `${t.label}<span class="n">${counts[t.id]}</span>`;
-    b.addEventListener("click", () => { setType(t.id); });
+    b.innerHTML = `${ICONS[t.id]}<span>${t.label}</span><span class="n">${counts[t.id]}</span>`;
+    b.addEventListener("click", () => setType(t.id));
     return b;
   }));
 }
 
-function setType(id) {
+function setType(id, focusTab = true) {
   state.type = id;
   state.section = ""; state.group = ""; state.lang.clear(); state.lic.clear(); state.access.clear();
-  update();
-  $(`#tab-${id}`)?.focus();
+  update(true);
+  if (focusTab) $(`#tab-${id}`)?.focus();
 }
 
 function facetGroup(legend, values, set, countFn) {
@@ -354,7 +365,6 @@ function selectGroup(label, id, values, current, onChange) {
 }
 
 function renderFilters() {
-  const f = $("#filters");
   const parts = [];
   const toks = tokens(state.q);
   const pool = ITEMS.filter((it) => it.type === state.type && score(it, toks) > 0 && !(it.inactive && !state.inactive));
@@ -380,7 +390,7 @@ function renderFilters() {
     seg.className = "segmented";
     seg.setAttribute("role", "group");
     seg.setAttribute("aria-labelledby", "mode-label");
-    for (const [id, label] of [["both", "Both"], ["technical", "Technical"], ["plain", "Plain language"]]) {
+    for (const [id, label] of [["both", "Both"], ["technical", "Technical"], ["plain", "Plain"]]) {
       const b = document.createElement("button");
       b.type = "button";
       b.textContent = label;
@@ -394,11 +404,19 @@ function renderFilters() {
   if (state.type === "software" || state.type === "all") {
     const lab = document.createElement("label");
     lab.className = "toggle";
-    lab.innerHTML = `<input type="checkbox" ${state.inactive ? "checked" : ""}><span>Include inactive and limited projects <span class="count">(archived, stale, or unlicensed; kept in a separate file)</span></span>`;
+    lab.innerHTML = `<input type="checkbox" ${state.inactive ? "checked" : ""}><span>Include inactive and limited projects<small>Archived, stale, or unlicensed; kept in a separate file.</small></span>`;
     lab.querySelector("input").addEventListener("change", (e) => { state.inactive = e.target.checked; update(); });
     parts.push(lab);
   }
-  f.replaceChildren(...parts.filter(Boolean));
+  // Preserve focus across re-render (e.g. while toggling chips inside the drawer).
+  const active = document.activeElement;
+  const key = active && $("#filters").contains(active) ? (active.id || active.dataset.key || active.textContent) : null;
+  $("#filters").replaceChildren(...parts.filter(Boolean));
+  if (key) {
+    const again = document.getElementById(key)
+      || [...$("#filters").querySelectorAll("button, input")].find((b) => b.dataset.key === key || b.textContent === key);
+    again?.focus();
+  }
 }
 
 function renderEmpty(container) {
@@ -409,18 +427,18 @@ function renderEmpty(container) {
     <p>Try fewer or different words, ${otherTab ? "search all types, " : ""}or remove filters. Every word you type must appear in an entry.</p>`;
   const row = document.createElement("div");
   row.className = "chip-row";
-  if (otherTab) row.append(chip("Search all types", false, () => setType("all")));
-  if (hasFilters()) row.append(chip("Clear filters", false, clearFilters));
+  if (otherTab) row.append(chip("Search all types", false, () => setType("all", false)));
+  if (activeFilterCount()) row.append(chip("Clear filters", false, clearFilters));
   for (const s of SUGGESTIONS.slice(0, 5)) row.append(chip(s, false, () => setQuery(s)));
   div.append(row);
   container.replaceChildren(div);
 }
 
-const hasFilters = () => !!(state.section || state.group || state.lang.size || state.lic.size || state.access.size);
+const activeFilterCount = () => (state.section ? 1 : 0) + (state.group ? 1 : 0) + state.lang.size + state.lic.size + state.access.size;
 function clearFilters() { state.section = ""; state.group = ""; state.lang.clear(); state.lic.clear(); state.access.clear(); update(); }
-function setQuery(q) { state.q = q; $("#q").value = q; update(); }
+function setQuery(q) { state.q = q; $("#q").value = q; update(true); }
 
-function update() {
+function update(animate = false) {
   const { list, counts, toks } = results();
   renderTabs(counts);
   renderFilters();
@@ -430,11 +448,154 @@ function update() {
   else {
     box.innerHTML = list.map(card).join("");
     highlight(box, toks);
+    if (animate && !REDUCED_MOTION) {
+      [...box.children].slice(0, 18).forEach((el, i) => { el.style.setProperty("--i", i); el.classList.add("enter"); });
+    }
   }
   const label = TYPES.find((t) => t.id === state.type).label.toLowerCase();
-  $("#count").textContent = `${list.length} ${list.length === 1 ? "result" : "results"}${state.type === "all" ? "" : ` in ${label}`}${state.q ? ` for “${state.q}”` : ""}`;
-  $("#clear-all").hidden = !(state.q || hasFilters());
+  const n = list.length;
+  $("#count").textContent = `${n} ${n === 1 ? "result" : "results"}${state.type === "all" ? "" : ` in ${label}`}${state.q ? ` for “${state.q}”` : ""}`;
+  $("#clear-all").hidden = !(state.q || activeFilterCount());
+  const fc = activeFilterCount();
+  $("#filters-n").hidden = !fc;
+  $("#filters-n").textContent = fc;
+  $("#filters-apply").textContent = `Show ${n} ${n === 1 ? "result" : "results"}`;
   writeUrl();
+}
+
+// ---------- Filters drawer (small screens) ----------
+const DESKTOP = matchMedia("(min-width: 1024px)");
+function openFilters() {
+  const panel = $("#filters-panel");
+  document.body.classList.add("filters-open", "no-scroll");
+  $("#scrim").hidden = false;
+  panel.setAttribute("role", "dialog");
+  panel.setAttribute("aria-modal", "true");
+  $("#filters-open").setAttribute("aria-expanded", "true");
+  setTimeout(() => panel.querySelector("button, select, input")?.focus(), 50);
+}
+function closeFilters(returnFocus = true) {
+  if (!document.body.classList.contains("filters-open")) return;
+  const panel = $("#filters-panel");
+  document.body.classList.remove("filters-open", "no-scroll");
+  $("#scrim").hidden = true;
+  panel.removeAttribute("role");
+  panel.removeAttribute("aria-modal");
+  $("#filters-open").setAttribute("aria-expanded", "false");
+  if (returnFocus) $("#filters-open").focus();
+}
+function trapFocus(e) {
+  if (e.key !== "Tab" || !document.body.classList.contains("filters-open")) return;
+  const f = [...$("#filters-panel").querySelectorAll("button, select, input")].filter((el) => !el.disabled && el.offsetParent);
+  if (!f.length) return;
+  if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+  else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+}
+
+// ---------- EEG visuals (decorative) ----------
+// Deterministic PRNG so the traces look the same on every visit.
+function mulberry32(a) {
+  return () => { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+
+// One channel: a sum of band-limited sines with whole-number cycles over `w`, so two copies tile seamlessly.
+function channelPath(w, y0, amp, seed, step = 3) {
+  const r = mulberry32(seed);
+  const comps = [
+    { k: 2 + Math.floor(r() * 3), a: 0.55 },             // delta
+    { k: 6 + Math.floor(r() * 4), a: 0.35 },             // theta
+    { k: 14 + Math.floor(r() * 8), a: 0.45 + r() * 0.3 }, // alpha (dominant in some channels)
+    { k: 34 + Math.floor(r() * 16), a: 0.14 },           // beta
+    { k: 70 + Math.floor(r() * 30), a: 0.06 },           // fast jitter
+  ].map((c) => ({ ...c, p: r() * Math.PI * 2 }));
+  const spikes = Array.from({ length: 1 + Math.floor(r() * 2) }, () => ({ x: r() * w, a: (r() > 0.5 ? 1 : -1) * (1.3 + r()), s: 6 + r() * 6 }));
+  const norm = comps.reduce((s, c) => s + c.a, 0);
+  let d = "";
+  for (let x = 0; x <= w * 2; x += step) {
+    const u = (x % w) / w;
+    let v = comps.reduce((s, c) => s + c.a * Math.sin(2 * Math.PI * c.k * u + c.p), 0) / norm;
+    for (const sp of spikes) { const dx = (x % w) - sp.x; v += sp.a * Math.exp(-(dx * dx) / (2 * sp.s * sp.s)); }
+    d += `${x ? "L" : "M"}${x} ${(y0 - v * amp).toFixed(1)}`;
+  }
+  return d;
+}
+
+const CHANNELS = ["Fp1", "Fp2", "F7", "F3", "Fz", "F4", "F8", "T7", "C3", "Cz", "C4", "T8", "P3", "Pz", "P4", "O1", "O2"];
+
+function drawTraces(svg, { w, h, rows, amp, opacity, labels, durMin, durMax, seed }) {
+  svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+  svg.style.setProperty("--w", `${w}px`);
+  const gap = h / (rows + 1);
+  const grad = `eeg-grad-${seed}`;
+  let out = `<defs><linearGradient id="${grad}" x1="0" x2="1"><stop offset="0" stop-color="#2dd4bf"/><stop offset=".5" stop-color="#38bdf8"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs>`;
+  for (let i = 0; i < rows; i++) {
+    const y = gap * (i + 1);
+    const dur = durMin + ((i * 7919) % 100) / 100 * (durMax - durMin);
+    if (labels) out += `<line class="baseline" x1="0" x2="${w}" y1="${y}" y2="${y}"/><text class="label" x="14" y="${y - amp * 0.9}">${CHANNELS[i % CHANNELS.length]}</text>`;
+    out += `<g class="trace" style="--dur:${dur.toFixed(1)}s"><path d="${channelPath(w, y, amp, seed * 97 + i)}" stroke="url(#${grad})" stroke-opacity="${opacity}"/></g>`;
+  }
+  svg.innerHTML = out;
+}
+
+function renderHeroEeg() {
+  const svg = $("#eeg");
+  const box = svg.getBoundingClientRect();
+  const w = Math.max(1400, Math.ceil(box.width));
+  const rows = box.height < 520 ? 7 : 10;
+  drawTraces(svg, { w, h: Math.ceil(box.height), rows, amp: Math.min(22, box.height / (rows + 1) / 2.2), opacity: 0.75, labels: true, durMin: 26, durMax: 46, seed: 7 });
+}
+
+function renderPageEeg() {
+  let host = $(".page-eeg");
+  if (!host) {
+    host = document.createElement("div");
+    host.className = "page-eeg";
+    host.setAttribute("aria-hidden", "true");
+    host.innerHTML = '<svg preserveAspectRatio="none"></svg>';
+    document.body.prepend(host);
+  }
+  const w = Math.max(1400, innerWidth);
+  drawTraces(host.querySelector("svg"), { w, h: innerHeight, rows: 6, amp: Math.min(34, innerHeight / 18), opacity: 1, labels: false, durMin: 90, durMax: 150, seed: 31 });
+}
+
+// 10–20 montage scalp map with electrodes pulsing in a travelling wave (desktop only via CSS).
+function renderScalp() {
+  const S = 360, C = S / 2, R = 140;
+  const pos = {
+    Fp1: [-0.22, -0.8], Fp2: [0.22, -0.8], F7: [-0.62, -0.5], F3: [-0.32, -0.42], Fz: [0, -0.4], F4: [0.32, -0.42], F8: [0.62, -0.5],
+    T7: [-0.8, 0], C3: [-0.4, 0], Cz: [0, 0], C4: [0.4, 0], T8: [0.8, 0],
+    P7: [-0.62, 0.5], P3: [-0.32, 0.42], Pz: [0, 0.4], P4: [0.32, 0.42], P8: [0.62, 0.5], O1: [-0.22, 0.8], O2: [0.22, 0.8],
+  };
+  let els = "";
+  for (const [name, [x, y]] of Object.entries(pos)) {
+    const cx = C + x * R, cy = C + y * R, d = ((y + 1) * 1.1 + Math.abs(x) * 0.5).toFixed(2);
+    els += `<g class="el" style="--d:${d}s"><circle class="halo" cx="${cx}" cy="${cy}" r="11"/><circle cx="${cx}" cy="${cy}" r="13"/><text x="${cx}" y="${cy}">${name}</text></g>`;
+  }
+  const svg = `<svg class="scalp" viewBox="0 0 ${S} ${S}" aria-hidden="true">
+    <circle class="grid-line" cx="${C}" cy="${C}" r="${R * 0.8}"/><line class="grid-line" x1="${C}" y1="${C - R}" x2="${C}" y2="${C + R}"/><line class="grid-line" x1="${C - R}" y1="${C}" x2="${C + R}" y2="${C}"/>
+    <path class="head" d="M${C - 14} ${C - R + 2} L${C} ${C - R - 18} L${C + 14} ${C - R + 2}"/>
+    <path class="head" d="M${C - R - 2} ${C - 18} q-14 18 0 36 M${C + R + 2} ${C - 18} q14 18 0 36"/>
+    <circle class="head" cx="${C}" cy="${C}" r="${R}"/>${els}</svg>`;
+  $(".hero-inner").insertAdjacentHTML("beforeend", svg);
+}
+
+function renderEeg() { renderHeroEeg(); renderPageEeg(); }
+
+// ---------- Hero stats ----------
+function animateStats() {
+  const n = { software: 0, dataset: 0, glossary: 0, platform: 0 };
+  for (const it of ITEMS) if (!it.inactive) n[it.type]++;
+  for (const el of document.querySelectorAll("[data-stat]")) {
+    const target = n[el.dataset.stat] || 0;
+    if (REDUCED_MOTION) { el.textContent = target; continue; }
+    const t0 = performance.now(), dur = 1100;
+    const tick = (t) => {
+      const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * e);
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
 }
 
 // ---------- URL state (deep linking) ----------
@@ -505,30 +666,58 @@ function wireInputs() {
   });
   $("#q").addEventListener("keydown", (e) => { if (e.key === "Escape") setQuery(""); });
   document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && document.body.classList.contains("filters-open")) { closeFilters(); return; }
+    trapFocus(e);
     const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName);
     if (e.key === "/" && !typing) { e.preventDefault(); $("#q").focus(); }
   });
   $("#tabs").addEventListener("keydown", (e) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
-    const i = TYPES.findIndex((t) => t.id === state.type);
+    const i = TYPES.findIndex((x) => x.id === state.type);
     const n = e.key === "Home" ? 0 : e.key === "End" ? TYPES.length - 1 : (i + (e.key === "ArrowRight" ? 1 : -1) + TYPES.length) % TYPES.length;
     e.preventDefault();
     setType(TYPES[n].id);
   });
   $("#clear-all").addEventListener("click", () => { state.q = ""; $("#q").value = ""; clearFilters(); $("#q").focus(); });
-  $("#suggestions").replaceChildren(...SUGGESTIONS.map((s) => chip(s, false, () => setQuery(s))));
+  $("#suggestions").replaceChildren(...SUGGESTIONS.map((s) => chip(s, false, () => {
+    setQuery(s);
+    $("#toolbar").scrollIntoView({ behavior: REDUCED_MOTION ? "auto" : "smooth" });
+  })));
+  $("#filters-open").addEventListener("click", openFilters);
+  $("#filters-close").addEventListener("click", () => closeFilters());
+  $("#filters-apply").addEventListener("click", () => { closeFilters(false); $("#results").focus(); });
+  $("#scrim").addEventListener("click", () => closeFilters());
+  DESKTOP.addEventListener("change", (e) => { if (e.matches) closeFilters(false); });
+
+  const toTop = $("#to-top");
+  new IntersectionObserver(([e]) => { toTop.hidden = e.isIntersecting; }).observe($(".hero"));
+  toTop.addEventListener("click", () => { scrollTo({ top: 0, behavior: REDUCED_MOTION ? "auto" : "smooth" }); $("#q").focus({ preventScroll: true }); });
+
+  let lastW = innerWidth;
+  let rt;
+  addEventListener("resize", () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { if (Math.abs(innerWidth - lastW) > 80) { lastW = innerWidth; renderEeg(); } }, 200);
+  });
 }
 
 async function boot() {
   initTheme();
   readUrl();
   wireInputs();
+  renderScalp();
+  renderEeg();
   try {
     const [main, inactive] = await Promise.all([fetchFirst(SOURCES.main), fetchFirst(SOURCES.inactive).catch(() => "")]);
     ITEMS = [...parse(main, "main"), ...parse(inactive, "inactive")];
     if (!ITEMS.length) throw new Error("No entries were found in the README");
     ITEMS.forEach((it, i) => { it.order = i; }); // document order across both files
-    update();
+    if (lastVerified) {
+      $("#verified").textContent = `Last verified ${lastVerified}.`;
+      $("#eyebrow-date").textContent = lastVerified;
+    }
+    animateStats();
+    update(true);
   } catch (err) {
     $("#count").textContent = "The list could not be loaded.";
     $("#results").innerHTML = `<div class="empty error"><h3>Couldn't load the list</h3>
