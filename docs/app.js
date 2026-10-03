@@ -5,10 +5,13 @@
 const REPO = "Core-Creates/awesome-eeg-software";
 const RAW = `https://raw.githubusercontent.com/${REPO}/main/`;
 const BLOB = `https://github.com/${REPO}/blob/main/`;
-// Relative paths work when the repo root is served locally; GitHub Pages falls back to raw.githubusercontent.com.
+// Local preview (repo root served over HTTP) reads the working copy via "../"; on GitHub Pages "../" would
+// resolve to the owner's user site, so there we read raw.githubusercontent.com only. Each source must also
+// start with the expected heading, so an unrelated README can never be parsed by mistake.
+const ON_PAGES = location.hostname.endsWith("github.io");
 const SOURCES = {
-  main: ["../README.md", RAW + "README.md"],
-  inactive: ["../inactive-and-limited.md", RAW + "inactive-and-limited.md"],
+  main: { expect: "# Awesome EEG Software", urls: [...(ON_PAGES ? [] : ["../README.md"]), RAW + "README.md"] },
+  inactive: { expect: "# Inactive and Limited Projects", urls: [...(ON_PAGES ? [] : ["../inactive-and-limited.md"]), RAW + "inactive-and-limited.md"] },
 };
 
 const SKIP_SECTIONS = new Set(["Contents", "Choosing a stack", "Licensing notes", "Contributing", "Footnotes"]);
@@ -482,11 +485,13 @@ function initTheme() {
 }
 
 // ---------- Boot ----------
-async function fetchFirst(urls) {
+async function fetchFirst({ expect, urls }) {
   for (const u of urls) {
     try {
       const r = await fetch(u, { cache: "no-cache" });
-      if (r.ok) return await r.text();
+      if (!r.ok) continue;
+      const text = await r.text();
+      if (text.trimStart().startsWith(expect)) return text;
     } catch (_) { /* try the next source */ }
   }
   throw new Error(`Could not load ${urls[urls.length - 1]}`);
@@ -521,6 +526,7 @@ async function boot() {
   try {
     const [main, inactive] = await Promise.all([fetchFirst(SOURCES.main), fetchFirst(SOURCES.inactive).catch(() => "")]);
     ITEMS = [...parse(main, "main"), ...parse(inactive, "inactive")];
+    if (!ITEMS.length) throw new Error("No entries were found in the README");
     ITEMS.forEach((it, i) => { it.order = i; }); // document order across both files
     update();
   } catch (err) {
