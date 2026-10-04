@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Awesome EEG Software — Search</title>
   <meta name="description" content="Search and filter a verified list of open-source EEG software, public EEG/ECoG/MEG/fNIRS datasets, and a glossary with technical and plain-language definitions.">
-  <meta name="theme-color" content="#070d1a">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f766e'/%3E%3Cpath d='M4 17h4l2.5-7 3.5 14 3.5-11 2.5 6 1.5-2H28' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <meta name="theme-color" content="#f3efe6" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#060907" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f3efe6'/%3E%3Cpath d='M3 18h5l2.5-8 3.5 14 3.5-11 2.5 6 1.5-2H29' fill='none' stroke='%2315130f' stroke-width='2.4' stroke-linejoin='round'/%3E%3Ccircle cx='27' cy='17' r='2.6' fill='%23c2272d'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=5">
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=8">
   <script>
     // Apply a saved theme before first paint to avoid a flash.
     try {
@@ -22,116 +23,120 @@
 <body>
   <a class="skip-link" href="#results">Skip to results</a>
 
-  <header class="site-header">
-    <div class="container header-row">
+  <header class="bar">
+    <div class="wrap bar-row">
       <a class="brand" href="./" aria-label="Awesome EEG Software, search home">
-        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M2 17h5l3-9 4 18 4-14 3 8 2-3h7"/></svg>
-        <span>Awesome EEG Software</span>
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M2 18h6l2.5-8 3.5 14 3.5-11 2.5 6 1.5-2H27"/><circle cx="27" cy="17" r="2.4" class="pen-dot"/></svg>
+        <span>Awesome<b>EEG</b></span>
       </a>
-      <nav class="header-actions" aria-label="Site">
-        <a class="icon-link" href="https://github.com/Core-Creates/awesome-eeg-software#readme" rel="noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-          <span>README</span>
-        </a>
-        <button id="theme-toggle" class="icon-button" type="button" aria-label="Theme: system. Switch to light">
-          <svg class="i-system" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-          <svg class="i-light" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-          <svg class="i-dark" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <div class="readout" aria-hidden="true">
+        <span><i>File</i> awesome-eeg.edf</span>
+        <span><i>Sens</i> 7&nbsp;µV/mm</span>
+        <span><i>LFF</i> 1&nbsp;Hz</span>
+        <span><i>HFF</i> 70&nbsp;Hz</span>
+        <span><i>Notch</i> 60&nbsp;Hz</span>
+        <span><i>Rec</i> <span class="rec-dot"></span><span id="readout-date">—</span></span>
+      </div>
+      <nav class="bar-actions" aria-label="Site">
+        <a class="bar-link" href="https://github.com/Core-Creates/awesome-eeg-software#readme" rel="noopener">README<span aria-hidden="true">&nbsp;↗</span></a>
+        <button id="theme-toggle" class="bar-link theme-btn" type="button" aria-label="Theme: automatic. Switch to paper">
+          <span class="theme-swatch" aria-hidden="true"></span><span id="theme-name">Auto</span>
         </button>
       </nav>
     </div>
   </header>
 
   <main>
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-bg" aria-hidden="true">
-        <div class="aurora"></div>
-        <svg id="eeg" class="eeg" preserveAspectRatio="none"></svg>
-        <div class="hero-fade"></div>
+    <section class="recording" aria-labelledby="title">
+      <div class="chart" aria-hidden="true">
+        <svg id="eeg" class="eeg"></svg>
       </div>
 
-      <div class="container hero-inner">
-        <p class="eyebrow"><span class="pulse" aria-hidden="true"></span> Open-source neurotech, verified <span id="eyebrow-date">2026</span></p>
-        <h1 id="hero-title">Find <span class="grad">EEG</span> software, datasets, and terms</h1>
-        <p class="lede">A curated list of tools for EEG, MEG, ECoG/sEEG, and fNIRS, with public datasets and a glossary written for both specialists and newcomers.</p>
+      <div class="wrap recording-grid">
+        <div class="sheet">
+          <dl class="label-fields">
+            <div><dt>Study</dt><dd>Open-source EEG ecosystem</dd></div>
+            <div><dt>Recorded</dt><dd id="rec-date">acquiring…</dd></div>
+            <div><dt>Montage</dt><dd>Software · Datasets · Glossary</dd></div>
+          </dl>
 
-        <form class="search" role="search" onsubmit="return false">
-          <label class="visually-hidden" for="q">Search the list</label>
-          <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input id="q" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search"
-                 placeholder="Search tools, datasets, or terms…" aria-describedby="search-hint">
-          <kbd class="kbd" aria-hidden="true">/</kbd>
-        </form>
-        <p id="search-hint" class="hint">Try <em>ICA</em>, <em>sleep staging</em>, or <em>ECoG</em>. Every word must match.<span class="kbd-hint"> Press <kbd>/</kbd> anywhere to search.</span></p>
+          <h1 id="title">Every open EEG tool, dataset &amp; term <span>on one recording.</span></h1>
+          <p class="lede">A verified list of open-source software for EEG, MEG, ECoG/sEEG, and fNIRS, with public datasets and a glossary written for specialists and newcomers alike.</p>
 
-        <div class="suggestions" aria-label="Suggested searches">
-          <div id="suggestions" class="chip-row scroll-row"></div>
+          <form class="annotate" role="search" onsubmit="return false">
+            <label for="q" class="annot-label"><span class="flag" aria-hidden="true">▼</span> Annotate the record — search</label>
+            <div class="field">
+              <input id="q" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search"
+                     placeholder="ICA, sleep staging, ECoG…" aria-describedby="search-hint">
+              <kbd class="kbd" aria-hidden="true">/</kbd>
+            </div>
+          </form>
+          <p id="search-hint" class="hint">Every word must match the start of a word in an entry.<span class="kbd-hint"> Press <kbd>/</kbd> to jump here.</span></p>
+
+          <div class="events">
+            <span class="events-label" id="events-label">Common events</span>
+            <div id="suggestions" class="event-row" role="group" aria-labelledby="events-label"></div>
+          </div>
+
+          <dl class="channel-count" aria-label="List size">
+            <div><dt>Tools</dt><dd data-stat="software">––</dd></div>
+            <div><dt>Datasets</dt><dd data-stat="dataset">––</dd></div>
+            <div><dt>Terms</dt><dd data-stat="glossary">–––</dd></div>
+            <div><dt>Standards</dt><dd data-stat="platform">–</dd></div>
+          </dl>
         </div>
 
-        <dl class="stats" aria-label="List size">
-          <div><dt>Tools</dt><dd data-stat="software">–</dd></div>
-          <div><dt>Datasets</dt><dd data-stat="dataset">–</dd></div>
-          <div><dt>Glossary terms</dt><dd data-stat="glossary">–</dd></div>
-          <div><dt>Standards</dt><dd data-stat="platform">–</dd></div>
-        </dl>
+        <figure class="montage" aria-hidden="true">
+          <div id="scalp"></div>
+          <figcaption><b>Fig. 1</b> International 10–20 system. Electrodes flash when their channel spikes.</figcaption>
+        </figure>
       </div>
     </section>
 
     <div class="toolbar" id="toolbar">
-      <div class="container toolbar-row">
+      <div class="wrap toolbar-row">
+        <span class="toolbar-label" aria-hidden="true">Montage</span>
         <div class="tabs" role="tablist" aria-label="Result type" id="tabs"></div>
         <button id="filters-open" class="filters-btn" type="button" aria-controls="filters-panel" aria-expanded="false">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18M6 12h12M10 19h4"/></svg>
-          <span>Filters</span><span class="filters-n" id="filters-n" hidden>0</span>
+          Filters<span class="filters-n" id="filters-n" hidden>0</span>
         </button>
       </div>
     </div>
 
-    <div class="container layout">
+    <div class="wrap layout">
       <div class="scrim" id="scrim" hidden></div>
       <aside class="filters" id="filters-panel" aria-labelledby="filters-title">
         <div class="drawer-head">
-          <h2 id="filters-title">Filters</h2>
-          <button id="filters-close" class="icon-button" type="button" aria-label="Close filters">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
-          </button>
+          <h2 id="filters-title">Amplifier settings</h2>
+          <button id="filters-close" class="bar-link" type="button" aria-label="Close filters">Close ✕</button>
         </div>
         <div id="filters" class="filters-body"></div>
         <div class="drawer-foot">
-          <button id="filters-apply" class="btn-primary" type="button">Show results</button>
+          <button id="filters-apply" class="apply" type="button">Show results</button>
         </div>
       </aside>
 
       <section class="results-area" aria-labelledby="results-heading">
         <div class="results-bar">
           <h2 id="results-heading" class="visually-hidden">Results</h2>
-          <p id="count" class="count" aria-live="polite" aria-atomic="true">Loading the list…</p>
-          <button id="clear-all" class="text-button" type="button" hidden>Clear search and filters</button>
+          <p id="count" class="count" aria-live="polite" aria-atomic="true">Acquiring signal<span class="caret" aria-hidden="true"></span></p>
+          <button id="clear-all" class="text-btn" type="button" hidden>Clear search &amp; filters</button>
         </div>
-        <div id="results" class="results" tabindex="-1">
-          <div class="card skeleton" aria-hidden="true"></div>
-          <div class="card skeleton" aria-hidden="true"></div>
-          <div class="card skeleton" aria-hidden="true"></div>
-          <div class="card skeleton" aria-hidden="true"></div>
-          <div class="card skeleton" aria-hidden="true"></div>
-          <div class="card skeleton" aria-hidden="true"></div>
-        </div>
+        <ol id="results" class="channels" tabindex="-1"></ol>
       </section>
     </div>
   </main>
 
-  <button id="to-top" class="to-top" type="button" aria-label="Back to top" hidden>
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>
-  </button>
+  <button id="to-top" class="to-top" type="button" aria-label="Back to top" hidden>↑</button>
 
-  <footer class="site-footer">
-    <div class="container footer-grid">
-      <p>Content comes live from the <a href="https://github.com/Core-Creates/awesome-eeg-software#readme" rel="noopener">README</a>, which is the single source of truth. <span id="verified"></span></p>
+  <footer class="end">
+    <div class="wrap">
+      <p class="end-mark" aria-hidden="true"><span>End of recording</span></p>
+      <p>Content is read live from the <a href="https://github.com/Core-Creates/awesome-eeg-software#readme" rel="noopener">README</a>, the single source of truth. <span id="verified"></span></p>
       <p><a href="https://github.com/Core-Creates/awesome-eeg-software/blob/main/CONTRIBUTING.md" rel="noopener">Contribute</a> · <a href="https://github.com/Core-Creates/awesome-eeg-software/blob/main/inactive-and-limited.md" rel="noopener">Inactive and limited projects</a> · List dedicated to the public domain (CC0). Each project and dataset keeps its own license.</p>
     </div>
   </footer>
 
-  <template id="icon-external"><svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></template>
-  <script src="app.js?v=5" defer></script>
+  <script src="app.js?v=8" defer></script>
 </body>
 </html>
