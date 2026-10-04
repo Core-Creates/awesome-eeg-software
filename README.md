@@ -1,5 +1,12 @@
 # Awesome EEG Software [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="media/logo-dark.png">
+    <img src="media/logo-light.png" width="420" alt="Pen &amp; Trace logo: a brain drawn as a neural network beside an EEG trace written by a fountain pen, above the words Pen &amp; Trace, neurodata for a brighter tomorrow">
+  </picture>
+</p>
+
 > A curated, verified list of open-source software for reading, preprocessing, analyzing, decoding, and acquiring EEG — from MATLAB classics like EEGLAB, FieldTrip, and Brainstorm to the MNE-Python ecosystem, BCI/deep-learning libraries, open hardware, and sleep/clinical tooling — plus verified public datasets for EEG, ECoG/sEEG, MEG, fNIRS, and human single-neuron electrophysiology.
 
 **Inclusion bar:** every entry must contain **meaningful code** and be either **novel** (a capability no other entry provides) or **exceptionally well engineered** (tests, CI, docs, packaging, active maintenance). Each repository was checked against the GitHub/GitLab APIs for source size, tests, CI, commits in the last 12 months, and license file. Maintained entries that fall short in a specific way carry an italic note; inactive or unlicensed projects that are still worth knowing about are listed in a separate file linked from the footnotes. Datasets are listed separately and labeled as data, not code.

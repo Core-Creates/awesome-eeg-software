@@ -102,8 +102,7 @@ mark { background: var(--mark); color: var(--mark-ink); padding: 0 1px; }
 .brand { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--ink); text-decoration: none;
   font: 900 1.45rem/1 var(--f-display); text-transform: uppercase; letter-spacing: 0.02em; }
 .brand b { color: var(--pen); font-weight: 900; margin-left: 2px; }
-.brand svg { width: 30px; height: 30px; fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linejoin: round; }
-.brand .pen-dot { fill: var(--pen); stroke: none; }
+.brand img { width: 48px; height: 32px; object-fit: contain; }
 .brand:hover { color: var(--ink); }
 .readout { display: none; flex: 1; min-width: 0; gap: 0; font: 500 0.74rem var(--f-mono); color: var(--muted); white-space: nowrap; overflow: hidden; }
 /* Only the field labels are uppercased: uppercasing values would turn µV into ΜV (reads as megavolts/millivolts). */
@@ -368,6 +367,16 @@ h1 span { display: block; color: var(--pen); }
 .end { border-top: 1.5px solid var(--rule-strong); padding: 26px 0 48px; background: var(--paper); font-size: 0.92rem; color: var(--muted); }
 .end p { margin: 4px 0; max-width: 95ch; }
 .end-mark { display: flex; align-items: center; gap: 14px; font: 600 0.72rem var(--f-mono); text-transform: uppercase; letter-spacing: 0.2em; color: var(--ink); margin-bottom: 14px !important; max-width: none !important; }
+/* Pen & Trace logo: light-text variant only where the background is dark (Phosphor). */
+.end-logo { margin: 6px 0 18px; }
+.end-logo img { width: min(300px, 70vw); height: auto; display: block; }
+.logo-for-dark { display: none !important; }
+:root[data-theme="dark"] .logo-for-light { display: none !important; }
+:root[data-theme="dark"] .logo-for-dark { display: block !important; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .logo-for-light { display: none !important; }
+  :root:not([data-theme="light"]) .logo-for-dark { display: block !important; }
+}
 .end-mark::before, .end-mark::after { content: ""; flex: 1; height: 1.5px; background: var(--rule-strong); }
 
 @media (prefers-reduced-motion: reduce) {
