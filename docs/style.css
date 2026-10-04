@@ -367,9 +367,9 @@ h1 span { display: block; color: var(--pen); }
 .end { border-top: 1.5px solid var(--rule-strong); padding: 26px 0 48px; background: var(--paper); font-size: 0.92rem; color: var(--muted); }
 .end p { margin: 4px 0; max-width: 95ch; }
 .end-mark { display: flex; align-items: center; gap: 14px; font: 600 0.72rem var(--f-mono); text-transform: uppercase; letter-spacing: 0.2em; color: var(--ink); margin-bottom: 14px !important; max-width: none !important; }
-/* Pen & Trace logo: light-text variant only where the background is dark (Phosphor). */
+/* Logo symbol: the variant with the lightened pen is used only on dark backgrounds (Phosphor). */
 .end-logo { margin: 6px 0 18px; }
-.end-logo img { width: min(300px, 70vw); height: auto; display: block; }
+.end-logo img { width: min(220px, 60vw); height: auto; display: block; }
 .logo-for-dark { display: none !important; }
 :root[data-theme="dark"] .logo-for-light { display: none !important; }
 :root[data-theme="dark"] .logo-for-dark { display: block !important; }

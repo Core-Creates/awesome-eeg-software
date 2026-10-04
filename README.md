@@ -2,8 +2,8 @@
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="media/logo-dark.png">
-    <img src="media/logo-light.png" width="420" alt="Pen &amp; Trace logo: a brain drawn as a neural network beside an EEG trace written by a fountain pen, above the words Pen &amp; Trace, neurodata for a brighter tomorrow">
+    <source media="(prefers-color-scheme: dark)" srcset="media/symbol-dark.png">
+    <img src="media/symbol-light.png" width="300" alt="Logo: a brain drawn as a neural network beside an EEG trace written by a fountain pen">
   </picture>
 </p>
 
